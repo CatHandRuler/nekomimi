@@ -1,29 +1,11 @@
-use serenity::{
-    async_trait,
-    model::prelude::Ready,
-    prelude::{Context, EventHandler, GatewayIntents},
-    Client,
-};
 use std::env;
 
-struct Handler;
-
-#[async_trait]
-impl EventHandler for Handler {
-    async fn ready(&self, _ctx: Context, _status: Ready) {
-        println!("Ready");
-    }
-}
+mod api;
+mod messengers;
 
 #[tokio::main]
 async fn main() {
-    let token = env::var("DISCORD_TOKEN").expect("Expected token; No token");
-    let mut client = Client::builder(&token, GatewayIntents::empty())
-        .event_handler(Handler)
-        .await
-        .expect("Err while creating Client");
-
-    if let Err(why) = client.start().await {
-        println!("Err with client: {:?}", why);
-    }
+    let token = env::var("DISCORD_TOKEN").expect("Token must exist; Token not found.");
+    let id = String::from("ID should be here");
+    messengers::discord::client::start(&token, id).await;
 }
